@@ -18,7 +18,7 @@
 
 typedef enum e_ttype
 {
-	T_TEXT,
+	T_DATA,
 	T_PIPE,
 	T_REDIRECT_IN,  // <
 	T_REDIRECT_OUT, // >
@@ -42,5 +42,9 @@ typedef struct s_token
 }	t_token;
 
 void	handle_command(char *command);
+int		handle_quotes(char *command, int start, t_token **tokens_list);
+void	add_to_list(char *command, int start, int end, t_token **tokens_list, t_qtype q_type);
+t_qtype	quote_type(char q);
+
 
 #endif

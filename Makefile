@@ -5,7 +5,7 @@ CFLAGS = -Wall -Werror -Wextra
 
 RM = rm -f
 
-SRCS = lexer.c
+SRCS = lexer.c utils1.c utils2.c
 MAIN_src = minishell.c
 
 OBJS = ${SRCS:.c=.o}

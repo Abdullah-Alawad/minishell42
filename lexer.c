@@ -9,29 +9,43 @@ int	is_operator(char c)
 
 int	check_operator(char *command, int start, t_token **tokens_list)
 {
-	int	i;
+	int		i;
+	t_qtype	q_type;
 
 	i = start;
+	q_type = quote_type(command[start]);
 	if ((command[i] == '<' && command[i + 1] == '<')
 		|| (command[i] == '>' && command[i] == '>'))
 		i += 2;
 	else
 		i += 1;
-	add_to_list(command, start, i, tokens_list);
+	add_to_list(command, start, i, tokens_list, q_type);
 	return (i);
 }
 
 void	lexer(char *command, t_token **tokens_list)
 {
-	int	i;
+	int		i;
+	int		start;
+	t_qtype	q_type;
 
 	i = 0;
 	while (command[i])
 	{
-		if (command[i] && command[i] == ' ')
+		while (command[i] && command[i] == ' ')
 			i++;
 		if (command[i] && is_operator(command[i]))
 			i = check_operator(command, i, tokens_list);
+		else if (command[i] && (command[i] == '\"' || command[i] == '\''))
+			i = handle_quotes(command, i, tokens_list);
+		else
+		{
+			start = i;
+			q_type = quote_type(command[start]);
+			while (command[i] && command[i] != ' ' && !is_operator(command[i]))
+				i++;
+			add_to_list(command, start, i, tokens_list, q_type);
+		}
 	} 
 }
 
@@ -72,10 +86,17 @@ void	handle_command(char *command)
 {
 	t_token	*tokens_list;
 
-	token_list = NULL;
+	tokens_list = NULL;
 	if(good_quotes(command))
 	{
 		lexer(command, &tokens_list);
+		t_token	*current = tokens_list;
+		while (current)
+		{
+			printf("Token: %-10s | Type: %d | Quote: %d\n", 
+				current->data, current->type, current->quote_type);
+			current = current->next;
+		}
 	}
 	else
 		printf(RED"[ERROR]invalid quotes number\n"RESET);
