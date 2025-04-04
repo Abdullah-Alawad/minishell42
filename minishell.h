@@ -26,6 +26,20 @@ typedef enum e_ttype
 	T_HEREDOC,		// <<
 }	t_ttype;
 
+typedef enum e_qtype
+{
+	NO_Q,
+	SINGLE_Q,
+	DOUBLE_Q,
+}	t_qtype;
+
+typedef struct s_token
+{
+	char			*data;
+	t_ttype			type;
+	t_qtype			quote_type;
+	struct s_token	*next;
+}	t_token;
 
 void	handle_command(char *command);
 
