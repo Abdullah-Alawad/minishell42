@@ -43,14 +43,14 @@ typedef struct s_token
 
 typedef struct s_command
 {
-	char			**av;
-	char			*in_file;
-	char			*out_file;
-	int				pipe;
-	int				heredoc;
-	int				append;
-	int				is_builtin;
-	strct s_command	*next;
+	char				**av;
+	char				*in_file;
+	char				*out_file;
+	int					pipe;
+	int					heredoc;
+	int					append;
+	int					is_builtin;
+	struct s_command	*next;
 }	t_command;	
 
 
@@ -58,6 +58,8 @@ void	handle_command(char *command);
 int		handle_quotes(char *command, int start, t_token **tokens_list);
 void	add_to_list(char *command, int start, int end, t_token **tokens_list, t_qtype q_type);
 t_qtype	quote_type(char q);
+int		check_tokens(t_token *tokens_list);
+
 
 
 #endif

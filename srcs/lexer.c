@@ -84,20 +84,28 @@ int	good_quotes(char *command)
 
 void	handle_command(char *command)
 {
-	t_token	*tokens_list;
+	t_token		*tokens_list;
+	t_command	*cmds_list;
 
 	tokens_list = NULL;
+	cmds_list = NULL;
 	if(good_quotes(command))
 	{
 		lexer(command, &tokens_list);
-		t_token	*current = tokens_list;
-		while (current)
+		if (!check_tokens(tokens_list))
 		{
-			printf("Token: %-10s | Type: %d | Quote: %d\n", 
-				current->data, current->type, current->quote_type);
-			current = current->next;
+			//free tokens
+			printf(RED"[ERROR], syntax error\n"RESET);
+			return ;
+		}
+		if (!parse_tokens(tokens_list, &cmds_list))
+		{
+			// free tokens
+			// free commands
+			printf(RED"[ERROR], failed to parse tokens\n");
+			return ;
 		}
 	}
 	else
-		printf(RED"[ERROR]invalid quotes number\n"RESET);
+		printf(RED"[ERROR], invalid quotes number\n"RESET);
 }

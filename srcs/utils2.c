@@ -25,3 +25,23 @@ int	handle_quotes(char *command, int start, t_token **tokens_list)
 	i++;
 	return (i);
 }
+
+int	check_tokens(t_token *tokens_list)
+{
+	if (!tokens_list)
+		return (0);
+	if (tokens_list->type != T_DATA)
+		return (0);
+	while (tokens_list)
+	{
+		if (tokens_list->type != T_DATA)
+		{
+			if (tokens_list->next == NULL)
+				return (0);
+			if (tokens_list->next->type != T_DATA)
+				return (0);
+		}
+		tokens_list = tokens_list->next;
+	}
+	return (1);
+}

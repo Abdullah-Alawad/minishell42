@@ -8,7 +8,8 @@ RM = rm -f
 SRC_DIR = srcs
 OBJ_DIR = objs
 
-SRCS = ${SRC_DIR}/minishell.c ${SRC_DIR}/lexer.c ${SRC_DIR}/utils1.c ${SRC_DIR}/utils2.c
+SRCS = ${SRC_DIR}/minishell.c ${SRC_DIR}/lexer.c ${SRC_DIR}/utils1.c ${SRC_DIR}/utils2.c \
+		${SRC_DIR}/parse_tokens.c
 OBJS = ${SRCS:${SRC_DIR}/%.c=${OBJ_DIR}/%.o}
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.c minishell.h
