@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 t_qtype	quote_type(char q)
 {

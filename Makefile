@@ -5,25 +5,27 @@ CFLAGS = -Wall -Werror -Wextra
 
 RM = rm -f
 
-SRCS = lexer.c utils1.c utils2.c
-MAIN_src = minishell.c
+SRC_DIR = srcs
+OBJ_DIR = objs
 
-OBJS = ${SRCS:.c=.o}
-MAIN_OBJ = minishell.o
+SRCS = ${SRC_DIR}/minishell.c ${SRC_DIR}/lexer.c ${SRC_DIR}/utils1.c ${SRC_DIR}/utils2.c
+OBJS = ${SRCS:${SRC_DIR}/%.c=${OBJ_DIR}/%.o}
 
-%.o:%.c minishell.h
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.c minishell.h
+	@mkdir -p ${dir $@}
 	${CC} ${CFLAGS} -c $< -o $@
 
-all: ${NAME} libft
+all: libft ${NAME}
 
 libft:
 	make -C libft
 
-${NAME}: ${MAIN_OBJ} ${OBJS}
+${NAME}: ${OBJS}
 		${CC} ${CFLAGS} ${MAIN_OBJ} ${OBJS} -Llibft -lft -lreadline -o ${NAME}
 
 clean:
-		${RM} ${MAIN_OBJ} ${OBJS}
+		${RM} ${OBJS}
+		rm -rf ${OBJ_DIR}
 		make -C libft fclean
 
 fclean: clean
