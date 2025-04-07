@@ -45,3 +45,24 @@ int	check_tokens(t_token *tokens_list)
 	}
 	return (1);
 }
+
+t_command	*cmd_create(void)
+{
+	t_command	*cmd;
+
+	cmd = malloc(sizeof(t_command));
+	if (!cmd)
+		return (NULL);
+	cmd->av = malloc(sizeof(char *) * 1);
+	if (!cmd->av)
+		return (NULL);
+	cmd->av[0] = NULL;
+	cmd->in_file = NULL;
+	cmd->out_file = NULL;
+	cmd->pipe = 0;
+	cmd->heredoc = 0;
+	cmd->append = 0;
+	cmd->is_builtin = 0;
+	cmd->next = NULL;
+	return (cmd);
+}

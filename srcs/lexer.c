@@ -82,6 +82,35 @@ int	good_quotes(char *command)
 		return (0);
 }
 
+
+
+void	print_command_list(t_command *cmd)
+{
+	int i;
+
+	while (cmd)
+	{
+		printf("Arguments:\n");
+		if (cmd->av)
+		{
+			i = 0;
+			while (cmd->av[i])
+			{
+				printf("  av[%d]: %s\n", i, cmd->av[i]);
+				i++;
+			}
+		}
+		printf("Input File: %s\n", cmd->in_file ? cmd->in_file : "NULL");
+		printf("Output File: %s\n", cmd->out_file ? cmd->out_file : "NULL");
+		printf("Pipe: %d\n", cmd->pipe);
+		printf("Heredoc: %d\n", cmd->heredoc);
+		printf("Append: %d\n", cmd->append);
+		printf("Is Builtin: %d\n", cmd->is_builtin);
+		printf("----------------------\n");
+		cmd = cmd->next;
+	}
+}
+
 void	handle_command(char *command)
 {
 	t_token		*tokens_list;
@@ -105,6 +134,7 @@ void	handle_command(char *command)
 			printf(RED"[ERROR], failed to parse tokens\n");
 			return ;
 		}
+		print_command_list(cmds_list);
 	}
 	else
 		printf(RED"[ERROR], invalid quotes number\n"RESET);

@@ -1,29 +1,48 @@
-#include "../minishell"
+#include "../minishell.h"
 
-t_command	*cmd_create(void)
+int	set_operator(t_command *cmd, t_token *tokens)
 {
-	t_command	*cmd;
+	if (tokens->type == T_REDIRECT_IN || tokens->type == T_HEREDOC)
+	{
+		cmd->in_file = ft_strdup(tokens->next->data);
+		if (!cmd->in_file)
+			return (0);
+		if (tokens->type == T_HEREDOC)
+			cmd->heredoc = 1;
+	}
+	else if (tokens->type == T_REDIRECT_OUT || tokens->type == T_APPEND)
+	{
+		cmd->out_file = ft_strdup(tokens->next->data);
+		if (!cmd->out_file)
+			return (0);
+		if (tokens->type == T_APPEND)
+			cmd->append = 2;
+		else
+			cmd->append = 1;
+	}
+	return (1);
+}
 
-	cmd = malloc(sizeof(t_command));
-	if (!cmd)
-		return (NULL);
-	cmd->av = malloc(sizeof(char *) * 1);
-	if (!cmd->av)
-		return (NULL);
-	cmd->av[0] = NULL;
-	cmd->in_file = NULL;
-	cmd->out_file = NULL;
-	cmd->pipe = 0;
-	cmd->heredoc = 0;
-	cmd->append = 0;
-	cmd->is_builtin = 0;
-	cmd->next = NULL;
-	return (cmd);
+int	check_builtin(char *s)
+{
+	int			len;
+	int			i;
+	static char	*b_ins[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit"};
+
+	len = ft_strlen(s);
+	i = 0;
+	while (b_ins[i])
+	{
+		if (!ft_strncmp(s, b_ins[i], len))
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 int	set_av(t_command *cmd, char *data, t_qtype q_type)
 {
-	char	**av;
+	char	**new_av;
 	int		i;
 
 	i = 0;
@@ -63,14 +82,17 @@ int	process_token(t_command **new_cmd, t_command **cmds, t_token *tokens)
 		if (!cmd)
 			return (0);
 		(*new_cmd) = cmd;
-		lst_add_back(cmds, (*new_cmd));
+		cmds_add_back(cmds, (*new_cmd));
 		i = 1;
 	}
-	else if (tokens->type == T_TEXT)
+	else if (tokens->type == T_DATA)
 	{
 		i = set_av((*new_cmd), tokens->data, tokens->quote_type);
-
+		(*new_cmd)->is_builtin = check_builtin((*new_cmd)->av[0]);
 	}
+	else
+		i = set_operator((*new_cmd), tokens);
+	return (i);
 }
 
 int	parse_tokens(t_token *tokens, t_command **cmds)
@@ -80,7 +102,7 @@ int	parse_tokens(t_token *tokens, t_command **cmds)
 	new_cmd = cmd_create();
 	if (!new_cmd)
 		return (0);
-	lst_add_back(cmds, new_cmd);
+	cmds_add_back(cmds, new_cmd);
 	while (tokens)
 	{
 		if (!process_token(&new_cmd, cmds, tokens))
