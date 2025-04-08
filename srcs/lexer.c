@@ -146,7 +146,7 @@ void	handle_command(char *command)
 		{
 			free_tokens(&tokens_list);
 			free_commands(&cmds_list);
-			printf(RED"[ERROR], failed to parse tokens\n");
+			printf(RED"[ERROR], failed to parse tokens\n"RESET);
 			return ;
 		}
 		free_tokens(&tokens_list);

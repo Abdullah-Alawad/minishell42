@@ -21,7 +21,7 @@ char	*get_env(char *data)
 			ft_strlcat(res, "$", 1200);
 			i = i + 2;
 		}
-		else if (data[i] == '$' && data[i + 1] && ft_isalnum(data[i + 1])) // little change here
+		else if (data[i] == '$' && data[i + 1] && ft_isalnum(data[i + 1]))
 		{
 			i++;
 			j = 0;

@@ -31,7 +31,7 @@ int	check_tokens(t_token *tokens_list)
 {
 	if (!tokens_list)
 		return (0);
-	if (tokens_list->type != T_DATA)
+	if (tokens_list->type == T_PIPE)
 		return (0);
 	while (tokens_list)
 	{

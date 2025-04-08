@@ -7,6 +7,7 @@ int main(void)
 	while (FOREVER)
 	{
 		command = readline(GREEN"A10-shell"RESET"$ ");
+		printf("%s\n", command);
 		if (!command)
 		{
 			rl_clear_history();
