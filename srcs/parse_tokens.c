@@ -60,11 +60,11 @@ int	set_av(t_command *cmd, char *data, t_qtype q_type)
 		new_av[i] = ft_strdup(data);
 	if (!new_av[i])
 	{
-		free(new_av); // NOTE: I think not enough i's need to be freed
+		free(new_av); // NOTE:need to be freed
 		return (0);
 	}
 	new_av[i + 1] = NULL;
-	free(cmd->av); // NOTE: same as above note
+	free(cmd->av); // NOTE: same as above note, but it works somehow
 	cmd->av = new_av;
 	return (1);
 }
