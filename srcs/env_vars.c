@@ -40,7 +40,6 @@ char	*get_env(char *data)
 			i++;
 		}
 	}
-	free(data); // right ????
 	return (res);
 }
 

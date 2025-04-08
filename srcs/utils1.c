@@ -50,21 +50,26 @@ void	lst_add_back(t_token **tokens_list, t_token *token)
 		(lst_last(*tokens_list))->next = token;
 }
 
-void	add_to_list(char *command, int start, int end, t_token **tokens_list, t_qtype q_type)
+int	add_to_list(char *command, int start, int end, t_token **tokens_list, t_qtype q_type)
 {
 	t_token	*token;
 	char	*data;
 	t_ttype	t_type;
 
 	data = ft_substr(command, start, end - start);
-	//if (!data)
-		// failed memory allocation function
+	if (!data)
+	{
+		free_tokens(tokens_list);
+		return (0);
+	}
 	t_type = token_type(data);
 	token = new_token(data, t_type, q_type);
 	if (!token)
 	{
 		free(data);
-		// failed memory allocation function
+		free_tokens(tokens_list);
+		return (0);
 	}
 	lst_add_back(tokens_list, token);
+	return (1);
 }

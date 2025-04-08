@@ -56,7 +56,7 @@ typedef struct s_command
 
 void		handle_command(char *command);
 int			handle_quotes(char *command, int start, t_token **tokens_list);
-void		add_to_list(char *command, int start, int end, t_token **tokens_list, t_qtype q_type);
+int			add_to_list(char *command, int start, int end, t_token **tokens_list, t_qtype q_type);
 void		lst_add_back(t_token **tokens_list, t_token *token);
 t_qtype		quote_type(char q);
 int			check_tokens(t_token *tokens_list);
@@ -64,9 +64,9 @@ int			parse_tokens(t_token *tokens, t_command **cmds);
 t_command	*cmd_create(void);
 char		*get_env(char *data);
 void		cmds_add_back(t_command **cmds_list, t_command *cmd);
-
-
-
+void		free_tokens(t_token **tokens_list);
+void		free_commands(t_command **cmds);
+void		free_av(char **s);
 
 
 #endif

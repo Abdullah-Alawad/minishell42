@@ -19,11 +19,12 @@ int	check_operator(char *command, int start, t_token **tokens_list)
 		i += 2;
 	else
 		i += 1;
-	add_to_list(command, start, i, tokens_list, q_type);
+	if (!add_to_list(command, start, i, tokens_list, q_type))
+		return (-1);
 	return (i);
 }
 
-void	lexer(char *command, t_token **tokens_list)
+int	lexer(char *command, t_token **tokens_list)
 {
 	int		i;
 	int		start;
@@ -35,18 +36,28 @@ void	lexer(char *command, t_token **tokens_list)
 		while (command[i] && command[i] == ' ')
 			i++;
 		if (command[i] && is_operator(command[i]))
+		{
 			i = check_operator(command, i, tokens_list);
+			if (i == -1)
+				return (0);
+		}
 		else if (command[i] && (command[i] == '\"' || command[i] == '\''))
+		{
 			i = handle_quotes(command, i, tokens_list);
+			if (i == -1)
+				return (0);
+		}
 		else
 		{
 			start = i;
 			q_type = quote_type(command[start]);
 			while (command[i] && command[i] != ' ' && !is_operator(command[i]))
 				i++;
-			add_to_list(command, start, i, tokens_list, q_type);
+			if (!add_to_list(command, start, i, tokens_list, q_type))
+				return (0);
 		}
-	} 
+	}
+	return (1);
 }
 
 int	good_quotes(char *command)
@@ -120,21 +131,27 @@ void	handle_command(char *command)
 	cmds_list = NULL;
 	if(good_quotes(command))
 	{
-		lexer(command, &tokens_list);
+		if(!lexer(command, &tokens_list))
+		{
+			printf(RED"[ERROR], faild mallocs\n"RESET);
+			return ;
+		}
 		if (!check_tokens(tokens_list))
 		{
-			//free tokens
+			free_tokens(&tokens_list);
 			printf(RED"[ERROR], syntax error\n"RESET);
 			return ;
 		}
 		if (!parse_tokens(tokens_list, &cmds_list))
 		{
-			// free tokens
-			// free commands
+			free_tokens(&tokens_list);
+			free_commands(&cmds_list);
 			printf(RED"[ERROR], failed to parse tokens\n");
 			return ;
 		}
+		free_tokens(&tokens_list);
 		print_command_list(cmds_list);
+		free_commands(&cmds_list);
 	}
 	else
 		printf(RED"[ERROR], invalid quotes number\n"RESET);

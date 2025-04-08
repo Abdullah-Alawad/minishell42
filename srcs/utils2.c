@@ -21,7 +21,8 @@ int	handle_quotes(char *command, int start, t_token **tokens_list)
 	i = start;
 	while (command[i] && command[i] != q)
 		i++;
-	add_to_list(command, start, i, tokens_list, q_type);
+	if (!add_to_list(command, start, i, tokens_list, q_type))
+		return (-1);
 	i++;
 	return (i);
 }
