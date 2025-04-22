@@ -64,7 +64,7 @@ typedef struct s_env_list
 
 
 
-void		handle_command(char *command);
+t_command	*handle_command(char *command);
 int			handle_quotes(char *command, int start, t_token **tokens_list);
 int			add_to_list(char *command, int start, int end, t_token **tokens_list, t_qtype q_type);
 void		lst_add_back(t_token **tokens_list, t_token *token);

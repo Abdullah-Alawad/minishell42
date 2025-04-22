@@ -1,9 +1,38 @@
 # include "../minishell.h"
 
+void	print_command_list(t_command *cmd)
+{
+	int i;
+
+	while (cmd)
+	{
+		printf("Arguments:\n");
+		if (cmd->av)
+		{
+			i = 0;
+			while (cmd->av[i])
+			{
+				printf("  av[%d]: %s\n", i, cmd->av[i]);
+				i++;
+			}
+		}
+		printf("Input File: %s\n", cmd->in_file ? cmd->in_file : "NULL");
+		printf("Output File: %s\n", cmd->out_file ? cmd->out_file : "NULL");
+		printf("Pipe: %d\n", cmd->pipe);
+		printf("Heredoc: %d\n", cmd->heredoc);
+		printf("Append: %d\n", cmd->append);
+		printf("Is Builtin: %d\n", cmd->is_builtin);
+		printf("----------------------\n");
+		cmd = cmd->next;
+	}
+}
+
+
 int main(int ac, char **av, char **env)
 {
 	char		*command;
 	t_env_list	*env_lst;
+	t_command	*cmds_list;
 
 	(void)av;
 	(void)ac;
@@ -20,8 +49,11 @@ int main(int ac, char **av, char **env)
 			exit(1);
 		}
 		add_history(command);
-		handle_command(command);
+		cmds_list = handle_command(command);
+		free_commands(&cmds_list);
 		free(command);
+		if (env_lst)
+			free_env_list(&env_lst);
 	}
 	return (0);
 }

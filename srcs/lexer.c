@@ -93,36 +93,7 @@ int	good_quotes(char *command)
 		return (0);
 }
 
-
-
-void	print_command_list(t_command *cmd)
-{
-	int i;
-
-	while (cmd)
-	{
-		printf("Arguments:\n");
-		if (cmd->av)
-		{
-			i = 0;
-			while (cmd->av[i])
-			{
-				printf("  av[%d]: %s\n", i, cmd->av[i]);
-				i++;
-			}
-		}
-		printf("Input File: %s\n", cmd->in_file ? cmd->in_file : "NULL");
-		printf("Output File: %s\n", cmd->out_file ? cmd->out_file : "NULL");
-		printf("Pipe: %d\n", cmd->pipe);
-		printf("Heredoc: %d\n", cmd->heredoc);
-		printf("Append: %d\n", cmd->append);
-		printf("Is Builtin: %d\n", cmd->is_builtin);
-		printf("----------------------\n");
-		cmd = cmd->next;
-	}
-}
-
-void	handle_command(char *command)
+t_command	*handle_command(char *command)
 {
 	t_token		*tokens_list;
 	t_command	*cmds_list;
@@ -134,25 +105,27 @@ void	handle_command(char *command)
 		if(!lexer(command, &tokens_list))
 		{
 			printf(RED"[ERROR], faild mallocs\n"RESET);
-			return ;
+			return (NULL);
 		}
 		if (!check_tokens(tokens_list))
 		{
 			free_tokens(&tokens_list);
 			printf(RED"[ERROR], syntax error\n"RESET);
-			return ;
+			return (NULL);
 		}
 		if (!parse_tokens(tokens_list, &cmds_list))
 		{
 			free_tokens(&tokens_list);
 			free_commands(&cmds_list);
 			printf(RED"[ERROR], failed to parse tokens\n"RESET);
-			return ;
+			return (NULL);
 		}
 		free_tokens(&tokens_list);
-		print_command_list(cmds_list);
-		free_commands(&cmds_list);
+		return (cmds_list);
 	}
 	else
+	{
 		printf(RED"[ERROR], invalid quotes number\n"RESET);
+		return (NULL);
+	}
 }
