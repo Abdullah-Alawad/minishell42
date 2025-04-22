@@ -27,12 +27,6 @@ t_env_list	*init_env(char *str)
 	env = malloc(sizeof(t_env_list));
 	if (!env)
 		return (NULL);
-	env->full = ft_strdup(str);
-	if (!env->full)
-	{
-		free(env);
-		return (NULL);
-	}
 	lst = ft_split(str, '=');
 	if (!lst)
 	{

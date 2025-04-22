@@ -61,8 +61,6 @@ void	free_env_list(t_env_list **env)
 			free((*env)->key);
 		if ((*env)->data)
 			free((*env)->data);
-		if ((*env)->full)
-			free((*env)->full);
 		free(*env);
 		*env = tmp;
 	}
