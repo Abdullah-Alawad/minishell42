@@ -53,6 +53,16 @@ typedef struct s_command
 	struct s_command	*next;
 }	t_command;	
 
+typedef struct s_env_list
+{
+	char				*key;
+	char				*data;
+	char				*full;
+	int					exported;
+	struct s_env_list	*next;
+}	t_env_list;
+
+
 
 void		handle_command(char *command);
 int			handle_quotes(char *command, int start, t_token **tokens_list);
@@ -67,6 +77,8 @@ void		cmds_add_back(t_command **cmds_list, t_command *cmd);
 void		free_tokens(t_token **tokens_list);
 void		free_commands(t_command **cmds);
 void		free_av(char **s);
+t_env_list	*create_env_list(char **env);
+void		free_env_list(t_env_list **env);
 
 
 #endif

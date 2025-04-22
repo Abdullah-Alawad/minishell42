@@ -9,7 +9,8 @@ SRC_DIR = srcs
 OBJ_DIR = objs
 
 SRCS = ${SRC_DIR}/minishell.c ${SRC_DIR}/lexer.c ${SRC_DIR}/utils1.c ${SRC_DIR}/utils2.c \
-		${SRC_DIR}/parse_tokens.c ${SRC_DIR}/env_vars.c ${SRC_DIR}/utils3.c ${SRC_DIR}/frees.c
+		${SRC_DIR}/parse_tokens.c ${SRC_DIR}/env_vars.c ${SRC_DIR}/utils3.c ${SRC_DIR}/frees.c \
+		${SRC_DIR}/env.c
 OBJS = ${SRCS:${SRC_DIR}/%.c=${OBJ_DIR}/%.o}
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.c minishell.h

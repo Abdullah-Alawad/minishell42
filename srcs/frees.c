@@ -47,3 +47,24 @@ void	free_commands(t_command **cmds)
 		*cmds = tmp;
 	}
 }
+
+void	free_env_list(t_env_list **env)
+{
+	t_env_list	*tmp;
+
+	if (!env)
+		return ;
+	while (*env)
+	{
+		tmp = (*env)->next;
+		if ((*env)->key)
+			free((*env)->key);
+		if ((*env)->data)
+			free((*env)->data);
+		if ((*env)->full)
+			free((*env)->full);
+		free(*env);
+		*env = tmp;
+	}
+	*env = NULL;
+}
