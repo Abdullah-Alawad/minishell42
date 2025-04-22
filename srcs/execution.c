@@ -14,13 +14,13 @@ int	execute_builtin_cmd(t_command *cmd, t_env_list **env)
 	else if (ft_strncmp("pwd", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
 		res = handle_pwd();
 	else if (ft_strncmp("cd", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
-		res = handle_cd(cmd->av, *env);
+		res = handle_cd(cmd->av, env);
 	else
 		printf("builtin not handled\n");
 	return (res);
 }
 
-void	execute_command(t_command *cmds, t_env_list *env_lst)
+void	execute_command(t_command *cmds, t_env_list **env_lst)
 {
 	t_command	*cmd;
 	int			status;
@@ -30,7 +30,7 @@ void	execute_command(t_command *cmds, t_env_list *env_lst)
 	while (cmd)
 	{
 		if (cmd->is_builtin)
-			status = execute_builtin_cmd(cmd, &env_lst);
+			status = execute_builtin_cmd(cmd, env_lst);
 		else
 			printf("external command\n");
 		cmd = cmd->next;

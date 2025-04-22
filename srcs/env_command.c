@@ -2,10 +2,13 @@
 
 int handle_env(t_env_list **env)
 {
-    while (*env)
+    t_env_list     *head;
+
+    head = *env;
+    while (head)
     {
-        printf("%s\n", (*env)->full);
-        *env = (*env)->next;
+        printf("%s=%s\n", head->key, head->data);
+        head = head->next;
     }
     return (0);
 }

@@ -79,11 +79,11 @@ void		free_commands(t_command **cmds);
 void		free_av(char **s);
 t_env_list	*create_env_list(char **env);
 void		free_env_list(t_env_list **env);
-void    	execute_command(t_command *cmds, t_env_list *env_lst);
+void    	execute_command(t_command *cmds, t_env_list **env_lst);
 int 		handle_echo(char **cmd);
 int			handle_env(t_env_list **env);
 int			handle_pwd(void);
-int			handle_cd(char **cmd, t_env_list *env);
+int			handle_cd(char **cmd, t_env_list **env);
 
 
 

@@ -51,7 +51,7 @@ int main(int ac, char **av, char **env)
 		add_history(command);
 		cmds_list = handle_command(command);
 		//print_command_list(cmds_list);
-		execute_command(cmds_list, env_lst);
+		execute_command(cmds_list, &env_lst);
 		free_commands(&cmds_list);
 		free(command);
 		// if (env_lst)
