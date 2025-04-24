@@ -77,10 +77,6 @@ int	handle_cd(char **cmd, t_env_list **env)
 		chdir(path);
 		update_pwd(env);
 	}
-	else if (num == 2 && ft_strncmp("-", cmd[1], ft_strlen(cmd[1])) == 0)
-	{
-		// handle this
-	}
 	else if (num == 2)
 	{
 		if (chdir(cmd[1]) != 0)
