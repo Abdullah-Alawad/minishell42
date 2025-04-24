@@ -83,7 +83,7 @@ int 		handle_echo(char **cmd);
 int			handle_env(t_env_list **env);
 int			handle_pwd(void);
 int			handle_cd(char **cmd, t_env_list **env);
-
+int			handle_exit(t_env_list **env, t_command *cmd);
 
 
 #endif

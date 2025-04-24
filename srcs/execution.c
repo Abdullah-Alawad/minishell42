@@ -15,6 +15,8 @@ int	execute_builtin_cmd(t_command *cmd, t_env_list **env)
 		res = handle_pwd();
 	else if (ft_strncmp("cd", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
 		res = handle_cd(cmd->av, env);
+	else if (ft_strncmp("exit", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
+		res = handle_exit(env, cmd);
 	else
 		printf("builtin not handled\n");
 	return (res);
