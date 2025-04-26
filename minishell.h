@@ -77,6 +77,8 @@ void		free_tokens(t_token **tokens_list);
 void		free_commands(t_command **cmds);
 void		free_av(char **s);
 t_env_list	*create_env_list(char **env);
+t_env_list	*init_env(char *str, int status);
+void		env_add_back(t_env_list **lst, t_env_list *env);
 void		free_env_list(t_env_list **env);
 void    	execute_command(t_command *cmds, t_env_list **env_lst);
 int 		handle_echo(char **cmd);
@@ -84,6 +86,7 @@ int			handle_env(t_env_list **env);
 int			handle_pwd(void);
 int			handle_cd(char **cmd, t_env_list **env);
 int			handle_exit(t_env_list **env, t_command *cmd);
+int			handle_export(char **cmd, t_env_list **env);
 
 
 #endif
