@@ -57,7 +57,7 @@ void	update_env(char *cmd, t_env_list **env)
 	start = ft_strchr_i(cmd, '=');
 	new_data = ft_substr(cmd, start + 1, len - (start + 1));
 	if (!new_data)
-		return (0); //double check
+		return ; //double check
 	while (tmp)
 	{
 		if (ft_strncmp(cmd, tmp->key, start - 1) == 0)
