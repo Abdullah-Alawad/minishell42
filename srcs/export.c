@@ -23,7 +23,7 @@ int	check_export_format(char *cmd)
 	if (ft_strchr_i(cmd, '='))
 	{
 		pos = ft_strchr_i(cmd, '=');
-		if (cmd[pos--] && cmd[pos++])
+		if (cmd[pos - 1] && cmd[pos + 1])
 			return (1);
 	}
 	return (0);
