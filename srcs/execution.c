@@ -19,8 +19,8 @@ int	execute_builtin_cmd(t_command *cmd, t_env_list **env)
 		res = handle_exit(env, cmd);
 	else if (ft_strncmp("export", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
 		res = handle_export(cmd->av, env);
-	else
-		printf("builtin not handled\n");
+	// else if (ft_strncmp("unset", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
+	// 	res = handle_unset(cmd->av, env);
 	return (res);
 }
 
