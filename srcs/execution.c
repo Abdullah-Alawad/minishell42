@@ -1,10 +1,7 @@
 #include "../minishell.h"
 
-int	execute_builtin_cmd(t_command *cmd, t_env_list **env)
+int	execute_builtin_cmd(t_command *cmd, t_env_list **env, int res)
 {
-	int	res;
-
-	res = 0;
 	if (!cmd || !cmd->av)
 		return (0);
 	if (ft_strncmp("echo", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
@@ -16,25 +13,24 @@ int	execute_builtin_cmd(t_command *cmd, t_env_list **env)
 	else if (ft_strncmp("cd", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
 		res = handle_cd(cmd->av, env);
 	else if (ft_strncmp("exit", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
-		res = handle_exit(env, cmd);
+		res = handle_exit(env, cmd, res);
 	else if (ft_strncmp("export", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
 		res = handle_export(cmd->av, env);
-	// else if (ft_strncmp("unset", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
-	// 	res = handle_unset(cmd->av, env);
+	else if (ft_strncmp("unset", cmd->av[0], ft_strlen(cmd->av[0])) == 0)
+		res = handle_unset(cmd->av, env);
 	return (res);
 }
 
 void	execute_command(t_command *cmds, t_env_list **env_lst)
 {
-	t_command	*cmd;
-	int			status;
+	t_command			*cmd;
+	static int			status;
 
 	cmd = cmds;
-	status = 0;
 	while (cmd)
 	{
 		if (cmd->is_builtin)
-			status = execute_builtin_cmd(cmd, env_lst);
+			status = execute_builtin_cmd(cmd, env_lst, status);
 		else
 			printf("external command\n");
 		cmd = cmd->next;

@@ -1,8 +1,9 @@
 #include "../minishell.h"
 
-int	handle_exit(t_env_list **env, t_command *cmd)
+int	handle_exit(t_env_list **env, t_command *cmd, int status)
 {
 	free_commands(&cmd);
 	free_env_list(env);
-	exit(0); // this is not right yet, exit status should be the status of last executed command
+	printf("status in exit: %d\n", status);
+	exit(status); // status of last exected command
 }
