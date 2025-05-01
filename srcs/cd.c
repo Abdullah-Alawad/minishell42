@@ -74,27 +74,39 @@ void	update_pwd(t_env_list **env)
 			pwd->data = NULL;
 	}
 }
-// consider handiling "cd ~/Documents"
+
 int	handle_cd(char **cmd, t_env_list **env)
 {
 	char	*path;
+	char	*tmp;
 	int		num;
+	int		is_tilde;
 
+	is_tilde = 0;
 	num = count_av(cmd);
 	if (num > 2)
 	{
 		perror("cd: too many arguments\n");
 		return (1);
 	}
-	else if (num == 1 || (num == 2 && ft_strncmp("~", cmd[1], ft_strlen(cmd[1])) == 0))
+	if (num == 2 && cmd[1][0] == '~')
+		is_tilde = 1;
+	if (num == 1 || (num == 2 && is_tilde))
 	{
 		path = get_home_path(env);
 		chdir(path);
-		update_pwd(env);
+		if (is_tilde && cmd[1][1] == '\0')
+		{
+			update_pwd(env);
+			return (0);
+		}
 	}
-	else if (num == 2)
+	if (num == 2)
 	{
-		if (chdir(cmd[1]) != 0)
+		tmp = cmd[1];
+		if (is_tilde && tmp[1] == '/')
+			tmp += 2;
+		if (chdir(tmp) != 0)
 		{
 			perror("cd");
 			return (1);
