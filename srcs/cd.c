@@ -31,11 +31,15 @@ void	update_pwd(t_env_list **env)
 	t_env_list	*pwd;
 	t_env_list	*old_pwd;
 	t_env_list	*head;
+	char		*copy_pwd;
 	char		*cwd;
 
 	head = *env;
 	pwd = NULL;
 	old_pwd = NULL;
+	copy_pwd = ft_strjoin("OLDPWD=", "tmp_path");
+	if (!copy_pwd)
+		return ;
 	while (head)
 	{
 		if (ft_strncmp("PWD", head->key, ft_strlen(head->key)) == 0)
@@ -44,6 +48,17 @@ void	update_pwd(t_env_list **env)
 			old_pwd = head;
 		head = head->next;
 	}
+	if (!old_pwd)
+	{
+		old_pwd = init_env(copy_pwd, 0);
+		if (!old_pwd)
+		{
+			free(copy_pwd);
+			return ;
+		}
+		env_add_back(env, old_pwd);
+	}
+	free(copy_pwd);
 	if (old_pwd && pwd)
 	{
 		free(old_pwd->data);
