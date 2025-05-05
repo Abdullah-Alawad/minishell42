@@ -1,5 +1,28 @@
 #include "../minishell.h"
 
+int	add_envs(t_env_list *env, char **envp)
+{
+	int		i;
+	char	*tmp
+
+	i = 0;
+	while (env)
+	{
+		tmp = ft_strjoin(env->key, "=");
+		if (!tmp)
+			return (1);
+		envp[i] = ft_strjoin(tmp, env->data);
+		if (!envp[i])
+		{
+			free(tmp);
+			return (1);
+		}
+		i++;
+		env = env->next;
+	}
+	envp[i] = NULL;
+	return (0);
+}
 
 int	env_len(t_env_list *env)
 {
