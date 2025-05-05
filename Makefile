@@ -17,7 +17,7 @@ OBJS = ${SRCS:${SRC_DIR}/%.c=${OBJ_DIR}/%.o}
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.c minishell.h
 	@mkdir -p ${dir $@}
-	${CC} ${CFLAGS} -c $< -o $@
+	${CC} ${CFLAGS} -g -c $< -o $@
 
 all: libft ${NAME}
 
@@ -25,7 +25,7 @@ libft:
 	make -C libft
 
 ${NAME}: ${OBJS}
-		${CC} ${CFLAGS} ${MAIN_OBJ} ${OBJS} -Llibft -lft -lreadline -o ${NAME}
+		${CC} ${CFLAGS} ${MAIN_OBJ} ${OBJS} -g -Llibft -lft -lreadline -o ${NAME}
 
 clean:
 		${RM} ${OBJS}

@@ -27,8 +27,11 @@ int	check_builtin(char *s)
 {
 	int			len;
 	int			i;
-	static char	*b_ins[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit"};
+	static char	*b_ins[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit", NULL};
 
+
+	if (!s || !*s)
+		return (0);
 	len = ft_strlen(s);
 	i = 0;
 	while (b_ins[i])
@@ -51,9 +54,17 @@ int	set_av(t_command *cmd, char *data, t_qtype q_type)
 	new_av = malloc(sizeof(char *) * (i + 2));
 	if (!new_av)
 		return (0);
-	i = -1;
-	while (cmd->av && cmd->av[++i])
-		new_av[i] = cmd->av[i];
+	i = 0;
+	while (cmd->av && cmd->av[i])
+	{
+		new_av[i] = ft_strdup(cmd->av[i]);
+		if (!new_av[i])
+		{
+			free_av(new_av);
+			return (0);
+		}
+		i++;
+	}
 	if ((q_type == NO_Q || q_type == DOUBLE_Q) && ft_strchr(data, '$'))
 		new_av[i] = get_env(data);
 	else
@@ -64,7 +75,7 @@ int	set_av(t_command *cmd, char *data, t_qtype q_type)
 		return (0);
 	}
 	new_av[i + 1] = NULL;
-	free(cmd->av); // NOTE: same as above note, but it works somehow
+	free_av(cmd->av); // NOTE: same as above note, but it works somehow
 	cmd->av = new_av;
 	return (1);
 }
