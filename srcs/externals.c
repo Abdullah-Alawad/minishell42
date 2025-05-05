@@ -3,7 +3,7 @@
 int	add_envs(t_env_list *env, char **envp)
 {
 	int		i;
-	char	*tmp
+	char	*tmp;
 
 	i = 0;
 	while (env)
@@ -37,7 +37,7 @@ int	env_len(t_env_list *env)
 	return (len);
 }
 
-char	*env_list_to_array(t_env_list **env)
+char	**env_list_to_array(t_env_list **env)
 {
 	int		envp_len;
 	char	**envp;
@@ -104,7 +104,7 @@ char	*get_cmd_path(char *cmd, t_env_list **env)
 	i = 0;
 	while (paths[i])
 	{
-		tmp = ft_strjoin(paths[i], '/');
+		tmp = ft_strjoin(paths[i], "/");
 		if (!tmp)
 		{
 			free_paths(paths);

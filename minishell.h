@@ -7,6 +7,7 @@
 # include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <sys/wait.h>
 
 # define FOREVER	1
 # define GREEN		"\033[0;32m"
