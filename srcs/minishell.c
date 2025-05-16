@@ -16,6 +16,16 @@ void	print_command_list(t_command *cmd)
 				i++;
 			}
 		}
+		printf("Arguments here:\n");
+		if (cmd->here_arr)
+		{
+			i = 0;
+			while (cmd->here_arr[i])
+			{
+				printf("  av[%d]: %s\n", i, cmd->here_arr[i]);
+				i++;
+			}
+		}
 		printf("Input File: %s\n", cmd->in_file ? cmd->in_file : "NULL");
 		printf("Output File: %s\n", cmd->out_file ? cmd->out_file : "NULL");
 		printf("Pipe: %d\n", cmd->pipe);

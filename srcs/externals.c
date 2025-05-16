@@ -77,9 +77,12 @@ char	*get_env_path(t_env_list *env)
 	tmp = env;
 	while (env)
 	{
-		len = ft_strlen(tmp->key); //problem here
-		if (ft_strncmp(tmp->key, "PATH", len) == 0)
-			return (tmp->data);
+		if (tmp->key)
+		{
+			len = ft_strlen(tmp->key); //problem here
+			if (ft_strncmp(tmp->key, "PATH", len) == 0)
+				return (tmp->data);
+		}
 		tmp = tmp->next;
 	}
 	return (NULL);
@@ -158,10 +161,10 @@ int	execute_external(t_command *cmd, t_env_list **env)
 		envp = env_list_to_array(env);
 		if (!envp)
 			return (1);
-		execve(path, cmd->av, NULL);
+		execve(path, cmd->av, envp);
 	}
 	else
 		waitpid(pid, &status, 0);
 	free(path);
-	return (1);
+	return (0);
 }

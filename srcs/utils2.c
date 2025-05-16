@@ -57,9 +57,15 @@ t_command	*cmd_create(void)
 	cmd->av = malloc(sizeof(char *) * 1);
 	if (!cmd->av)
 		return (NULL);
+	cmd->here_arr = malloc(sizeof(char *) * 1);
+	if (!cmd->here_arr)
+		return (NULL);
 	cmd->av[0] = NULL;
+	cmd->here_arr[0] = NULL;
 	cmd->in_file = NULL;
 	cmd->out_file = NULL;
+	cmd->in_fd = -1;
+	cmd->out_fd = -1;
 	cmd->pipe = 0;
 	cmd->heredoc = 0;
 	cmd->append = 0;

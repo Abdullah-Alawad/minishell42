@@ -6,6 +6,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <readline/readline.h>
+# include <fcntl.h>
 # include <readline/history.h>
 # include <sys/wait.h>
 
@@ -45,11 +46,14 @@ typedef struct s_token
 typedef struct s_command
 {
 	char				**av;
-	char				*in_file;
-	char				*out_file;
-	int					pipe;
-	int					heredoc;
-	int					append;
+	char				*in_file;	//file name if < or <<
+	char				**here_arr;
+	char				*out_file;	//file name if > or >>
+	int					in_fd;
+	int					out_fd;
+	int					pipe;		// 0 -> command will not be piped / 1 -> will be piped
+	int					heredoc; // 0 -> <  / 1 -> << 
+	int					append;  // 1 -> > / 2 -> >>
 	int					is_builtin;
 	struct s_command	*next;
 }	t_command;	

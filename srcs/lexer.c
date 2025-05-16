@@ -51,7 +51,8 @@ int	lexer(char *command, t_token **tokens_list)
 		{
 			start = i;
 			q_type = quote_type(command[start]);
-			while (command[i] && command[i] != ' ' && !is_operator(command[i]))
+			while (command[i] && command[i] != ' ' && !is_operator(command[i])
+					&& command[i] != '\'' && command[i] != '\"')
 				i++;
 			if (!add_to_list(command, start, i, tokens_list, q_type))
 				return (0);
