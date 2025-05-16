@@ -101,10 +101,11 @@ int	execute_builtin_cmd(t_command *cmd, t_env_list **env, int res)
 
 void	execute_command(t_command *cmds, t_env_list **env_lst)
 {
-	t_command			*cmd;
-	static int			status;
-	int					stdin;
-	int					stdout;
+	t_command	*cmd;
+	static int	status;
+	int			stdin = -1;
+	int			stdout = -1;
+	bool		redirected;
 
 	cmd = cmds;
 	while (cmd)
@@ -114,17 +115,25 @@ void	execute_command(t_command *cmds, t_env_list **env_lst)
 			cmd = cmd->next;
 			continue ;
 		}
-		redirect_io(cmd, &stdin, &stdout);
+		redirected = (cmd->in_fd != -1 || cmd->out_fd != -1);
+		if (redirected)
+			redirect_io(cmd, &stdin, &stdout);
+
 		if (cmd->is_builtin)
 			status = execute_builtin_cmd(cmd, env_lst, status);
 		else
 			status = execute_external(cmd, env_lst);
-		restore_io(stdin, stdout);
+
+		if (redirected)
+			restore_io(stdin, stdout);
+
 		if (cmd->in_fd != -1)
 			close(cmd->in_fd);
 		if (cmd->out_fd != -1)
 			close(cmd->out_fd);
+
 		cmd = cmd->next;
 	}
-	printf("status: %d\n",status);
+	printf("status: %d\n", status);
 }
+
