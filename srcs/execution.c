@@ -1,83 +1,5 @@
 #include "../minishell.h"
 
-int open_heredocs(t_command *cmd)
-{
-	int     pipefd[2];
-	char    *line;
-	int     i = 0;
-
-	while (cmd->here_arr && cmd->here_arr[i])
-	{
-		if (pipe(pipefd) == -1)
-			return (perror("pipe"), 1);
-
-		while (1)
-		{
-			line = readline("> ");
-			if (!line || ft_strncmp(line, cmd->here_arr[i], ft_strlen(cmd->here_arr[i])) == 0)
-				break;
-			write(pipefd[1], line, ft_strlen(line));
-			write(pipefd[1], "\n", 1);
-			free(line);
-		}
-		free(line);
-		close(pipefd[1]); // done writing
-
-		// Only save the last heredoc as stdin
-		if (cmd->here_arr[i + 1] == NULL)
-			cmd->in_fd = pipefd[0]; // save read-end
-		else
-			close(pipefd[0]); // discard read-end for earlier heredocs
-
-		i++;
-	}
-	return (0);
-}
-
-
-int	open_redirections(t_command *cmd)
-{
-	if (cmd->here_arr)
-	{
-		if (open_heredocs(cmd))
-			return (1);
-	}
-	if (cmd->in_file && cmd->heredoc == 0)
-	{
-		cmd->in_fd = open(cmd->in_file, O_RDONLY);
-		if (cmd->in_fd < 0)
-			return (perror(cmd->in_file), 1);
-	}
-	if (cmd->out_file)
-	{
-		if (cmd->append == 2)
-			cmd->out_fd = open(cmd->out_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else
-			cmd->out_fd = open(cmd->out_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (cmd->out_fd < 0)
-			return (perror(cmd->out_file), 1);
-	}
-	return (0);
-}
-
-void	redirect_io(t_command *cmd, int *saved_stdin, int *saved_stdout)
-{
-	*saved_stdin = dup(STDIN_FILENO);
-	*saved_stdout = dup(STDOUT_FILENO);
-	if (cmd->in_fd != -1)
-		dup2(cmd->in_fd, STDIN_FILENO);
-	if (cmd->out_fd != -1)
-		dup2(cmd->out_fd, STDOUT_FILENO);
-}
-
-void	restore_io(int saved_stdin, int saved_stdout)
-{
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
-	close(saved_stdin);
-	close(saved_stdout);
-}
-
 int	execute_builtin_cmd(t_command *cmd, t_env_list **env, int res)
 {
 	if (!cmd || !cmd->av)
@@ -101,39 +23,65 @@ int	execute_builtin_cmd(t_command *cmd, t_env_list **env, int res)
 
 void	execute_command(t_command *cmds, t_env_list **env_lst)
 {
-	t_command	*cmd;
-	static int	status;
-	int			stdin = -1;
-	int			stdout = -1;
-	bool		redirected;
+	t_command	*cmd = cmds;
+	static int	status = 0;
+	int			pipe_fd[2];
+	int			prev_fd = -1; // read end of previous pipe
 
-	cmd = cmds;
 	while (cmd)
 	{
 		if (open_redirections(cmd))
 		{
 			cmd = cmd->next;
-			continue ;
+			continue;
 		}
-		redirected = (cmd->in_fd != -1 || cmd->out_fd != -1);
-		if (redirected)
-			redirect_io(cmd, &stdin, &stdout);
+		if (cmd->next && pipe(pipe_fd) == -1)
+		{
+			perror("pipe");
+			return;
+		}
 
-		if (cmd->is_builtin)
-			status = execute_builtin_cmd(cmd, env_lst, status);
-		else
-			status = execute_external(cmd, env_lst);
+		pid_t pid = fork();
+		if (pid == -1)
+		{
+			perror("fork");
+			return;
+		}
+		else if (pid == 0) // child
+		{
+			if (cmd->in_fd != -1)
+				dup2(cmd->in_fd, STDIN_FILENO);
+			else if (prev_fd != -1)
+				dup2(prev_fd, STDIN_FILENO);
 
-		if (redirected)
-			restore_io(stdin, stdout);
+			if (cmd->out_fd != -1)
+				dup2(cmd->out_fd, STDOUT_FILENO);
+			else if (cmd->next)
+				dup2(pipe_fd[1], STDOUT_FILENO);
 
-		if (cmd->in_fd != -1)
-			close(cmd->in_fd);
-		if (cmd->out_fd != -1)
-			close(cmd->out_fd);
+			// close unused fds
+			if (pipe_fd[0]) close(pipe_fd[0]);
+			if (pipe_fd[1]) close(pipe_fd[1]);
+			if (prev_fd != -1) close(prev_fd);
+
+			if (cmd->is_builtin)
+				exit(execute_builtin_cmd(cmd, env_lst, status));
+			else
+				exit(execute_external(cmd, env_lst));
+		}
+
+		// parent process
+		if (cmd->in_fd != -1) close(cmd->in_fd);
+		if (cmd->out_fd != -1) close(cmd->out_fd);
+		if (prev_fd != -1) close(prev_fd);
+		if (cmd->next)
+		{
+			prev_fd = pipe_fd[0];
+			close(pipe_fd[1]);
+		}
 
 		cmd = cmd->next;
 	}
-	printf("status: %d\n", status);
+	while (wait(&status) > 0);
+	printf("status: %d\n", WEXITSTATUS(status));
 }
-

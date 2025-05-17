@@ -95,6 +95,9 @@ int			handle_exit(t_env_list **env, t_command *cmd, int status);
 int			handle_export(char **cmd, t_env_list **env);
 int			handle_unset(char **cmd, t_env_list **env);
 int			execute_external(t_command *cmd, t_env_list **env);
-
+int 		open_heredocs(t_command *cmd);
+int			open_redirections(t_command *cmd);
+void		redirect_io(t_command *cmd, int *saved_stdin, int *saved_stdout);
+void		restore_io(int saved_stdin, int saved_stdout);
 
 #endif
